@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ZeladoriaCidadã: registre e acompanhe problemas do bairro de Santana, em São Paulo.">
+<meta name="theme-color" content="#070b14">
+<title>ZeladoriaCidadã · Santana, São Paulo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23123c69'/%3E%3Cpath d='M32 52s14-12 14-23a14 14 0 1 0-28 0c0 11 14 23 14 23z' fill='%2322d3ee'/%3E%3Ccircle cx='32' cy='29' r='5' fill='%23123c69'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<a class="pular" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="topo">
+  <div class="topo-in">
+    <a class="marca" href="#painel" aria-label="ZeladoriaCidadã, ir para o painel">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        <rect width="48" height="48" rx="13" fill="#0c1322" stroke="url(#lg)" stroke-width="2"/>
+        <path d="M24 39s10-8.6 10-16.5a10 10 0 1 0-20 0C14 30.4 24 39 24 39z" fill="url(#lg)"/>
+        <circle cx="24" cy="22" r="3.6" fill="#0c1322"/><path d="M8 40h8M32 40h8" stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/></svg>
+      <span><b>Zeladoria<span>Cidadã</span></b><small>Santana · São Paulo</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Seções do sistema">
+      <a href="#painel" data-aba="painel" data-ic="activity">Painel</a>
+      <a href="#ocorrencias" data-aba="ocorrencias" data-ic="layers">Ocorrências</a>
+      <a href="#registrar" data-aba="registrar" data-ic="plus">Registrar</a>
+      <a href="#cadastros" data-aba="cadastros" data-ic="shield">Cadastros</a>
+    </nav>
+    <div class="ctrl">
+      <span class="api" id="api" data-s="?" role="status"><i></i><span class="txt" id="api-txt">Conectando…</span></span>
+      <button class="ib" id="b-menos" type="button" aria-label="Diminuir o tamanho do texto" data-ic="a-menos"></button>
+      <button class="ib" id="b-mais" type="button" aria-label="Aumentar o tamanho do texto" data-ic="a-mais"></button>
+      <button class="ib" id="b-contraste" type="button" aria-pressed="false" aria-label="Alto contraste" data-ic="contraste"></button>
+      <button class="ib" id="b-tema" type="button" aria-label="Alternar tema claro e escuro" data-ic="sun"></button>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo" tabindex="-1">
+
+  <!-- PAINEL -->
+  <section id="aba-painel" class="aba" aria-labelledby="t-painel">
+    <div class="titulo-pg">
+      <div><h1 id="t-painel">Santana em <em>tempo real</em></h1>
+        <p>Indicadores da zeladoria do bairro: o que foi registrado, o que está em andamento e quanto tempo leva para resolver.</p></div>
+      <button class="btn" type="button" id="b-atualizar-p"><span data-ic="refresh"></span>Atualizar</button>
+    </div>
+    <div class="grade g4" id="kpis"></div>
+    <div class="grade g2" style="margin-top:14px" id="graficos-1"></div>
+    <div class="grade g2" style="margin-top:14px" id="graficos-2"></div>
+    <div class="grade" style="margin-top:14px" id="graficos-3"></div>
+  </section>
+
+  <!-- OCORRÊNCIAS -->
+  <section id="aba-ocorrencias" class="aba" hidden aria-labelledby="t-oc">
+    <div class="titulo-pg">
+      <div><h1 id="t-oc">Ocorrências do <em>bairro</em></h1>
+        <p>Pesquise, filtre e acompanhe cada registro até a resolução.</p></div>
+      <a class="btn pri" href="#registrar"><span data-ic="plus"></span>Nova ocorrência</a>
+    </div>
+    <div class="barra">
+      <div class="busca"><span data-ic="search"></span><label class="sr" for="f-busca">Buscar ocorrências</label>
+        <input id="f-busca" type="search" placeholder="Buscar por título, local, tipo ou protocolo" autocomplete="off"></div>
+      <div class="sel"><label class="sr" for="f-cat">Tipo de problema</label><select id="f-cat"></select></div>
+      <div class="sel"><label class="sr" for="f-reg">Local</label><select id="f-reg"></select></div>
+      <div class="sel"><label class="sr" for="f-ordem">Ordenar</label>
+        <select id="f-ordem"><option value="recentes">Mais recentes</option><option value="antigas">Mais antigas</option>
+          <option value="prioridade">Maior urgência</option><option value="prazo">Prazo mais curto</option></select></div>
+    </div>
+    <div class="barra" style="justify-content:space-between">
+      <div class="chips-f" id="chips-status" role="group" aria-label="Filtrar por situação" style="margin:0"></div>
+      <div class="acoes" style="margin:0">
+        <div class="seg" role="group" aria-label="Modo de visualização">
+          <button type="button" id="v-grade" aria-pressed="true" aria-label="Cartões" data-ic="grid"></button>
+          <button type="button" id="v-tabela" aria-pressed="false" aria-label="Tabela" data-ic="list"></button></div>
+        <button class="btn" type="button" id="b-csv"><span data-ic="download"></span>Exportar CSV</button>
+        <button class="btn" type="button" id="b-atualizar"><span data-ic="refresh"></span>Atualizar</button>
+      </div>
+    </div>
+    <p class="contagem" id="contagem" aria-live="polite"></p>
+    <div id="lista"></div>
+  </section>
+
+  <!-- REGISTRAR -->
+  <section id="aba-registrar" class="aba" hidden aria-labelledby="t-reg">
+    <div class="titulo-pg">
+      <div><h1 id="t-reg">Registrar <em>ocorrência</em></h1>
+        <p>Conte o que está acontecendo no seu bairro. Em poucos passos o registro entra na fila da equipe de zeladoria.</p></div>
+    </div>
+    <div class="reg-grid">
+      <div>
+        <form class="card pad" id="form-reg" novalidate>
+          <div class="passo"><b>1</b><h2>Seus dados</h2></div>
+          <div class="campo"><label for="r-nome">Nome completo <span class="obrig" aria-hidden="true">*</span></label>
+            <input id="r-nome" autocomplete="name" maxlength="100" placeholder="Como você se chama?" aria-describedby="e-nome"><div class="erro-campo" id="e-nome" role="alert"></div></div>
+          <div class="linha2">
+            <div class="campo"><label for="r-email">E-mail <span class="obrig" aria-hidden="true">*</span></label>
+              <input id="r-email" type="email" autocomplete="email" maxlength="120" placeholder="voce@exemplo.com" aria-describedby="e-email"><div class="erro-campo" id="e-email" role="alert"></div></div>
+            <div class="campo"><label for="r-tel">Telefone <small>(opcional)</small></label>
+              <input id="r-tel" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(11) 99999-9999" aria-describedby="e-tel"><div class="erro-campo" id="e-tel" role="alert"></div></div>
+          </div>
+          <label class="check"><input type="checkbox" id="r-lembrar"> Lembrar meus dados neste aparelho (ficam salvos só no seu navegador).</label>
+
+          <div class="passo"><b>2</b><h2>O problema</h2></div>
+          <fieldset style="border:0;padding:0;margin:0 0 14px"><legend class="rotulo-f">Tipo de problema <span class="obrig" aria-hidden="true">*</span></legend>
+            <div class="cats" id="r-cats"></div><div class="erro-campo" id="e-cat" role="alert"></div></fieldset>
+          <div class="campo"><label for="r-reg">Onde fica? <span class="obrig" aria-hidden="true">*</span></label>
+            <select id="r-reg" aria-describedby="e-reg"></select><div class="erro-campo" id="e-reg" role="alert"></div></div>
+          <div class="campo"><label for="r-titulo">Resumo do problema <span class="obrig" aria-hidden="true">*</span></label>
+            <input id="r-titulo" maxlength="120" placeholder="Ex.: Poste apagado na esquina da Av. Braz Leme" aria-describedby="e-titulo">
+            <div class="dica"><span class="erro-campo" id="e-titulo" role="alert" style="margin:0"></span><span id="n-titulo">0/120</span></div></div>
+          <div class="campo"><label for="r-desc">Detalhes <small>(opcional)</small></label>
+            <textarea id="r-desc" maxlength="500" placeholder="Conte o que acontece, desde quando e quem é afetado."></textarea>
+            <div class="dica"><span></span><span id="n-desc">0/500</span></div></div>
+          <fieldset style="border:0;padding:0;margin:0 0 16px"><legend class="rotulo-f">Urgência</legend>
+            <div class="urg">
+              <label><input type="radio" name="urg" value="BAIXA"><span>Baixa</span></label>
+              <label><input type="radio" name="urg" value="MEDIA" checked><span>Média</span></label>
+              <label><input type="radio" name="urg" value="ALTA"><span>Alta</span></label></div></fieldset>
+          <button class="btn pri" type="submit" id="r-enviar">Enviar ocorrência</button>
+        </form>
+        <div class="card sucesso" id="sucesso" hidden></div>
+      </div>
+      <aside class="lateral" aria-label="Pré-visualização e dicas">
+        <div class="card pad previa"><div class="rotulo">Pré-visualização</div><div id="previa" style="margin-top:10px"></div></div>
+        <div class="card pad"><div class="rotulo">Para um bom registro</div>
+          <ul class="dicas"><li>Cite a rua e um ponto de referência.</li><li>Diga se há risco para idosos, crianças ou pessoas com mobilidade reduzida.</li>
+            <li>Use <b>urgência alta</b> só quando houver perigo imediato.</li><li>Guarde o protocolo para acompanhar o andamento.</li></ul></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CADASTROS -->
+  <section id="aba-cadastros" class="aba" hidden aria-labelledby="t-cad">
+    <div class="titulo-pg">
+      <div><h1 id="t-cad">Cadastros da <em>equipe</em></h1>
+        <p>Gerencie os tipos de problema (com prazo padrão de resolução) e os locais atendidos em Santana.</p></div>
+      <button class="btn pri" type="button" id="b-novo-cad"><span data-ic="plus"></span><span id="t-novo-cad">Novo</span></button>
+    </div>
+    <div class="cad-tabs chips-f" role="group" aria-label="Escolher cadastro">
+      <button type="button" id="cad-categorias" aria-pressed="true">Categorias</button>
+      <button type="button" id="cad-regioes" aria-pressed="false">Regiões</button></div>
+    <div id="cad-lista"></div>
+  </section>
+</main>
+
+<footer>
+  <span>Projeto acadêmico · FIAP · Global Solution 2026.2 · CitizenTech · dados fictícios</span>
+  <span class="ods" aria-label="Objetivos de Desenvolvimento Sustentável conectados"><span class="o11">ODS 11</span><span class="o10">ODS 10</span><span class="o9">ODS 9</span></span>
+</footer>
+
+<div class="toasts" id="toasts" role="region" aria-live="polite" aria-label="Notificações"></div>
+<dialog class="drawer" id="drawer" aria-labelledby="dr-titulo"></dialog>
+<dialog class="modal" id="modal" aria-labelledby="md-titulo"></dialog>
+<script src="js/app.js"></script>
+</body>
+</html>
