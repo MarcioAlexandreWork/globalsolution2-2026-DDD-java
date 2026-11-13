@@ -119,7 +119,7 @@ Interface web moderna e acessível, servida em `/` (sem dependências externas):
 - Git
 
 ### Passo a passo (local)
-1. Clone o repositório: `git clone [PREENCHER: URL do GitHub]`
+1. Clone o repositório: `git clone https://github.com/MarcioAlexandreWork/globalsolution2-2026-DDD-java/`
 2. No Oracle da FIAP (SQL Developer), execute em ordem os scripts da pasta `database/`:
    `01_ddl.sql` → `02_dml.sql` (opcional, `00_drop.sql` recria do zero e `03_dql.sql` traz consultas de exemplo).
 3. Configure as variáveis de ambiente (veja `.env.example`):
@@ -132,7 +132,7 @@ Interface web moderna e acessível, servida em `/` (sem dependências externas):
 > **Segurança:** usuário e senha do banco nunca ficam no código nem no GitHub, somente em variáveis de ambiente.
 
 ### Deploy (Render)
-- **Link do deploy:** `[PREENCHER: URL do Render]`
+- **Link do deploy:** `https://globalsolution2-2026-ddd-java.onrender.com/`
 1. No GitHub, suba o projeto (o `Dockerfile` já está na raiz).
 2. No [render.com](https://render.com): **New → Web Service** → conecte o repositório → *Runtime:* **Docker**.
 3. Em **Environment**, cadastre `DB_URL`, `DB_USER` e `DB_PASSWORD`.
